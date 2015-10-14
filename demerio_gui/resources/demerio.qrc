@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/demerio.png</file>
+        <file>images/demerio-problem.png</file>
+        <file>images/demerio-conductor-problem.png</file>
+        <file>images/box.png</file>
+        <file>images/dropbox.png</file>
+        <file>images/google_drive.png</file>
+        <file>images/tray_animations/tray.gif</file>
+    </qresource>
+</RCC>
