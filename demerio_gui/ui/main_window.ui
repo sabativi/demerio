@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="clouds_tab">
       <attribute name="title">
@@ -53,8 +53,11 @@
       </layout>
      </widget>
      <widget class="QWidget" name="account_tab">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
-       <string>Account</string>
+       <string>Data</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="10,0,1,0,0,0">
        <item>
@@ -100,7 +103,7 @@
           <item>
            <widget class="QPushButton" name="start_btn">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>start</string>

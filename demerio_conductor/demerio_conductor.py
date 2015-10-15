@@ -54,3 +54,7 @@ class DemerioConductor(LoggingEventHandler):
             self.mapping.rename_dir(event.src_path, event.dest_path)
         else:
             self.mapping.rename_file(event.src_path, event.dest_path)
+
+    def reconstruct_dir(self, output_dir):
+        print "reconstruct dir"
+

@@ -30,6 +30,7 @@ class MainWindow(QDialog):
         self.ui.label_version.setText("Demerio version %s" % (get_versions()['version'],))
         self.ui.start_btn.setVisible(False)
         self.ui.progress_bar.setVisible(False)
+        self.ui.tabWidget.setCurrentIndex(0)
         self.ui.launch_btn.clicked.connect(self.launch_daemon)
         self.ui.output_btn.clicked.connect(self.validate)
         self.ui.start_btn.clicked.connect(self.reconstruct_data)
@@ -90,13 +91,14 @@ class MainWindow(QDialog):
     def launch_daemon(self):
         self.ui.launch_btn.hide()
         self.hide()
+        self.ui.account_tab.setEnabled(True)
         number_of_storages = self.storage_manager.get_number_of_storages()
-        event_handler = WrapHandler(Mapping(demerio_dir, config_file), FileFec(redundant, number_of_storages), self.storage_manager)
-        event_handler.conductor_exception.connect(self.tray.conductor_problem)
-        event_handler.event_started.connect(self.tray.event_started)
-        event_handler.event_finished.connect(self.tray.event_finished)
+        self.event_handler = WrapHandler(Mapping(demerio_dir, config_file), FileFec(redundant, number_of_storages), self.storage_manager)
+        self.event_handler.conductor_exception.connect(self.tray.conductor_problem)
+        self.event_handler.event_started.connect(self.tray.event_started)
+        self.event_handler.event_finished.connect(self.tray.event_finished)
         observer = Observer()
-        daemon = DemerioDaemon(event_handler, observer, demerio_dir)
+        daemon = DemerioDaemon(self.event_handler, observer, demerio_dir)
         daemon.start()
         self.open_demerio_folder()
 
@@ -111,5 +113,5 @@ class MainWindow(QDialog):
 
     @pyqtSlot()
     def reconstruct_data(self):
-        pass
+        self.event_handler.reconstruct_dir(self.dir_selected)
 
