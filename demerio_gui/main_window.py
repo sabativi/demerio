@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QListView
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QCoreApplication
 from resources.demerio_qrc import *
 from system_tray import SystemTray
 from cloud_widget import CloudWidget
@@ -39,12 +40,13 @@ class MainWindow(QDialog):
         self.create_tray_actions()
         self.init_storage_manager()
         self.add_clouds_to_view()
+        self.daemon = None
 
     def create_tray_actions(self):
         self.tray.add_action("Open Demerio Folder", self.open_demerio_folder)
         self.tray.add_action("Preference", self.show)
         self.tray.add_separator()
-        self.tray.add_quit_action()
+        self.tray.add_action("Quit", self.quit_app)
 
     """
     should be done in cloud widget class with a proper model and view
@@ -93,13 +95,13 @@ class MainWindow(QDialog):
         self.hide()
         self.ui.account_tab.setEnabled(True)
         number_of_storages = self.storage_manager.get_number_of_storages()
-        self.event_handler = DemerioConductor(Mapping(demerio_dir, config_file), FileFec(redundant, number_of_storages), self.storage_manager)
+        self.event_handler = DemerioConductor(Mapping(demerio_dir, config_file), FileFec(PARTS_NEEDED, number_of_storages), self.storage_manager)
         self.event_handler.conductor_exception.connect(self.tray.conductor_problem)
         self.event_handler.event_started.connect(self.tray.event_started)
         self.event_handler.event_finished.connect(self.tray.event_finished)
         observer = Observer()
-        daemon = DemerioDaemon(self.event_handler, observer, demerio_dir)
-        daemon.start()
+        self.daemon = DemerioDaemon(self.event_handler, observer, demerio_dir, should_exit=False)
+        self.daemon.start()
         self.open_demerio_folder()
 
     @pyqtSlot()
@@ -114,4 +116,11 @@ class MainWindow(QDialog):
     @pyqtSlot()
     def reconstruct_data(self):
         self.event_handler.reconstruct_dir(self.dir_selected)
+
+    @pyqtSlot()
+    def quit_app(self):
+        if self.daemon is not None:
+            self.daemon.should_exit = True
+            self.daemon.join()
+        QCoreApplication.instance().quit()
 

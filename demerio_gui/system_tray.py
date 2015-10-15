@@ -66,9 +66,6 @@ class SystemTray(QWidget):
         self.connection_handler.value_changed.connect(self.internet_connection)
         self.connection_handler.start()
 
-    def add_quit_action(self):
-        self.add_action("Quit", QCoreApplication.instance().quit)
-
     def add_action(self, name, triggered_action):
         action = QAction(QCoreApplication.translate(trad_context, name), self, triggered = triggered_action)
         self.tray_icon_menu.addAction(action)

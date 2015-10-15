@@ -8,7 +8,7 @@ if not os.path.exists(demerio_dir):
     create_new_dir(demerio_dir)
 config_file = os.path.join(demerio_config_dir, "map.demerio")
 
-redundant = 2 ## any 2 of pars can reconstruct
+PARTS_NEEDED = 2 ## any 2 of pars can reconstruct
 
 "Trad context : do not really know why there should be multiple for now"
 trad_context = "MainWindow"
