@@ -60,10 +60,17 @@ class GoogleDriveAPI(StorageAPI):
         self.create_demerio_folder()
 
     def create_demerio_folder(self):
-        demerio_folder = self.drive.CreateFile({'title': "demerio",
+        ## a bit messy here because we use both pydrive and google drive module
+        ## which have different level of abstraction
+        param = { "q" : "mimeType = 'application/vnd.google-apps.folder' and title = 'demerio'" }
+        results = self.gauth.service.files().list(**param).execute()['items']
+        if len(results) == 1:
+            self.root_folder_id = results[0]['id']
+        else:
+            demerio_folder = self.drive.CreateFile({'title': "demerio",
                                                       "mimeType": "application/vnd.google-apps.folder"})
-        demerio_folder.Upload()
-        self.root_folder_id = demerio_folder.metadata.get("id")
+            demerio_folder.Upload()
+            self.root_folder_id = demerio_folder.metadata.get("id")
 
     def get_auth_url(self):
         return self.gauth.GetAuthUrl()
