@@ -1,4 +1,4 @@
-from demerio_conductor.demerio_conductor import DemerioConductor
+from demerio_conductor import DemerioConductor
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 

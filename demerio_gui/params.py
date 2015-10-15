@@ -20,3 +20,4 @@ def ui_full_path(ui_filename):
 
 FREQUENCY_CHECK_MS = 5000
 BAR_NOTIFICATION_TIME = 2000
+TIME_OUT_CALL_S = 3

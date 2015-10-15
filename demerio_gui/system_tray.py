@@ -7,7 +7,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QSystemTrayIcon
 from PyQt5.QtWidgets import QWidget
-from connection_handler import ConnectionHandler
+from demerio_conductor.connection_handler import ConnectionHandler
 from params import *
 
 
@@ -62,7 +62,7 @@ class SystemTray(QWidget):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setContextMenu(self.tray_icon_menu)
         self.icon_management = IconManagement(self.tray_icon)
-        self.connection_handler = ConnectionHandler(self)
+        self.connection_handler = ConnectionHandler(FREQUENCY_CHECK_MS, TIME_OUT_CALL_S, self)
         self.connection_handler.value_changed.connect(self.internet_connection)
         self.connection_handler.start()
 

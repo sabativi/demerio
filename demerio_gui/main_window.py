@@ -17,7 +17,7 @@ from PyQt5.QtGui import QDesktopServices
 from resources.demerio_qrc import *
 from system_tray import SystemTray
 from cloud_widget import CloudWidget
-from models.wrap_handler import WrapHandler
+from demerio_conductor.wrap_handler import WrapHandler
 from version import get_versions
 from params import *
 

@@ -14,7 +14,7 @@ It depends on several others modules, you need to add the path to the project in
 
 To launch the app use :
 ```
-python demerio_gui/main.py
+python main.py
 ```
 
 To do so you need to have the secret file that contains the secret keys to the app. Please ask Victor if you are in this case.

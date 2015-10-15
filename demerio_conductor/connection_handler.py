@@ -2,23 +2,21 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import QTimer
-from params import *
 import urllib2
-
-
-TIME_OUT_CALL_S = 3
 
 class ConnectionHandler(QObject):
 
     value_changed = pyqtSignal(bool)
 
-    def __init__(self, parent=None):
+    def __init__(self, frequency_check, time_before_time_out, parent=None):
         super(ConnectionHandler, self).__init__(parent)
+        self.frequency_check = frequency_check
+        self.time_before_time_out = time_before_time_out
         self.internet_ok = None
-        self.timer  = QTimer(self)
+        self.timer = QTimer(self)
 
     def start(self):
-        self.timer.setInterval(FREQUENCY_CHECK_MS)
+        self.timer.setInterval(self.frequency_check)
         self.timer.timeout.connect(self.update)
         self.timer.start()
 
@@ -31,7 +29,7 @@ class ConnectionHandler(QObject):
             self.value_changed.emit(new_value)
 
     def check_internet_call(self):
-        urllib2.urlopen('http://www.demerio.com', timeout=TIME_OUT_CALL_S)
+        urllib2.urlopen('http://www.demerio.com', timeout=self.time_before_time_out)
 
     @pyqtSlot()
     def update(self):

@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
-from main_window import MainWindow
-from version import get_versions
-from params import *
+from demerio_gui.main_window import MainWindow
+from demerio_gui.version import get_versions
+from demerio_gui.params import *
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
