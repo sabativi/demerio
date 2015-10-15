@@ -94,9 +94,3 @@ class TestDemerioHandler(unittest.TestCase):
         self.assertTrue(self.mapping.has_file(new_file))
         self.assertTrue(self.mapping.get_state(new_file) == STATE.detected)
 
-    def test_on_created_file_with_no_network_connection(self):
-        pass
-
-    def test_on_created_file_with_one_cloud_failed_transfer(self):
-        pass
-
