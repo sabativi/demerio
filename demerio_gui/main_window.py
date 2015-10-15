@@ -17,7 +17,7 @@ from PyQt5.QtGui import QDesktopServices
 from resources.demerio_qrc import *
 from system_tray import SystemTray
 from cloud_widget import CloudWidget
-from demerio_conductor.wrap_handler import WrapHandler
+from demerio_conductor.demerio_conductor import DemerioConductor
 from version import get_versions
 from params import *
 
@@ -93,7 +93,7 @@ class MainWindow(QDialog):
         self.hide()
         self.ui.account_tab.setEnabled(True)
         number_of_storages = self.storage_manager.get_number_of_storages()
-        self.event_handler = WrapHandler(Mapping(demerio_dir, config_file), FileFec(redundant, number_of_storages), self.storage_manager)
+        self.event_handler = DemerioConductor(Mapping(demerio_dir, config_file), FileFec(redundant, number_of_storages), self.storage_manager)
         self.event_handler.conductor_exception.connect(self.tray.conductor_problem)
         self.event_handler.event_started.connect(self.tray.event_started)
         self.event_handler.event_finished.connect(self.tray.event_finished)

@@ -1,17 +1,42 @@
 from watchdog.events import LoggingEventHandler
+from PyQt5.QtCore import QObject
+from PyQt5.QtCore import pyqtSignal
 from demerio_utils.log import *
 from demerio_utils.file_utils import *
 
-class DemerioConductor(LoggingEventHandler):
+def add_signals(func):
+    """
+    Decorator to send signal before and after event handler so that
+    we know where we are processing things
+    """
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        self.event_started.emit()
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            self.conductor_exception.emit(e)
+        else:
+            self.event_finished.emit()
+    return wrapper
+
+class DemerioConductor(LoggingEventHandler, QObject):
     """
     Handler to operate all operations
     """
+
+    event_started = pyqtSignal()
+    event_finished = pyqtSignal()
+    conductor_exception = pyqtSignal(Exception)
 
     def __init__(self, mapping, fec, storage_manager):
         self.mapping = mapping
         self.fec = fec
         self.storage_manager = storage_manager
+        LoggingEventHandler.__init__(self)
+        QObject.__init__(self)
 
+    @add_signals
     def on_created(self, event):
         super(DemerioConductor, self).on_created(event)
         if not event.is_directory:
@@ -28,6 +53,7 @@ class DemerioConductor(LoggingEventHandler):
             self.mapping.update_to_ok_state(event.src_path, chunks_list)
             delete_dir(temp_dir)
 
+    @add_signals
     def on_deleted(self, event):
         super(DemerioConductor, self).on_deleted(event)
         if event.is_directory:
@@ -39,6 +65,7 @@ class DemerioConductor(LoggingEventHandler):
             self.storage_manager.remove_files(self.mapping.get_chunks(event.src_path))
             self.mapping.remove_file(event.src_path)
 
+    @add_signals
     def on_modified(self, event):
         super(DemerioConductor, self).on_modified(event)
         if not event.is_directory:
@@ -48,6 +75,7 @@ class DemerioConductor(LoggingEventHandler):
             self.storage_manager.update_file(previous_chunks, new_parts)
             delete_dir(temp_dir)
 
+    @add_signals
     def on_moved(self, event):
         super(DemerioConductor, self).on_moved(event)
         if event.is_directory:
