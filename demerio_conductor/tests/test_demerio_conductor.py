@@ -96,3 +96,27 @@ class TestDemerioHandler(unittest.TestCase):
         # Then
         actual_number_of_files = count_files_recursively_in_dir(output_dir)
         self.assertEqual(number_of_files, actual_number_of_files)
+
+    def test_reconstruct_with_subdirectories(self):
+        # Given
+        number_of_dir = random.randint(1, 10)
+        number_of_files_in_dir = [random.randint(1, 100) for i in range(number_of_dir)]
+        expected_number_of_files = sum(number_of_files_in_dir)
+        for dir_number in range(number_of_dir):
+            number_of_files_to_create = number_of_files_in_dir[dir_number]
+            random_dir = create_random_dir(self.mapping.base_dir)
+            for file_number in range(number_of_files_to_create):
+                file_path = generate_random_file_name_in_dir(random_dir)
+                self.mapping.add_file(file_path, self.k, self.m)
+                self.mapping.update_to_splitted_state(file_path, [generate_random_string() for i in range(self.m)])
+        output_dir = create_random_dir()
+        self.addCleanup(lambda: delete_dir(output_dir))
+        self.storage_manager.download_file_chunks = mock_download_file_chunks
+        self.fec.decode_path = mock_decode_path
+
+        # When
+        self.handler.reconstruct_dir(output_dir)
+
+        # Then
+        actual_number_of_files = count_files_recursively_in_dir(output_dir)
+        self.assertEqual(expected_number_of_files, actual_number_of_files)

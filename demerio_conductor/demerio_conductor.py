@@ -88,8 +88,10 @@ class DemerioConductor(LoggingEventHandler, QObject):
             map_file = os.path.join(self.mapping.base_dir, relative_file_path)
             file_to_create = os.path.join(output_dir, relative_file_path)
             chunks = self.mapping.get_chunks(map_file)
-            chunks_download_path = [ os.path.join(output_dir, generate_random_string()) for chunk in chunks]
+            temp_dir = create_random_dir()
+            chunks_download_path = [ os.path.join(temp_dir, generate_random_string()) for chunk in chunks]
             self.storage_manager.download_file_chunks(chunks, chunks_download_path)
+            create_dir_if_not_exist(file_to_create)
             self.fec.decode_path(file_to_create, chunks_download_path)
 
 

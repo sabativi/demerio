@@ -99,6 +99,11 @@ def get_size(file_path):
     except:
         return 0
 
+def create_dir_if_not_exist(path):
+    dir_path = os.path.dirname(path)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
 
 def count_files_recursively_in_dir(folder):
     total = 0
