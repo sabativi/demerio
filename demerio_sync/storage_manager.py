@@ -28,6 +28,10 @@ class StorageManager(object):
         for ((storage_name, cloud_file_name), part) in zip(previous_chunk, new_list_of_parts):
             self.map_of_storage[storage_name].update_file(part, cloud_file_name)
 
-    def remove_files(self, chunk_list):
+    def remove_file_chunks(self, chunk_list):
         for (storage_name, cloud_file_name) in chunk_list:
             self.map_of_storage[storage_name].delete_file(cloud_file_name)
+
+    def download_file_chunks(self, chunk_list, output_file_paths):
+        for ((storage_name, cloud_file_id), output_file_path) in zip(chunk_list, output_file_paths):
+            self.map_of_storage[storage_name].download_file(cloud_file_id, output_file_path)

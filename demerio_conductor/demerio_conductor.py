@@ -59,10 +59,10 @@ class DemerioConductor(LoggingEventHandler, QObject):
         if event.is_directory:
             files_to_remove = self.mapping.get_files_in_dir(event.src_path)
             chunks_to_remove = [chunk for file_to_remove in files_to_remove for chunk in self.mapping.get_chunks(file_to_remove)]
-            self.storage_manager.remove_files(chunks_to_remove)
+            self.storage_manager.remove_file_chunks(chunks_to_remove)
             self.mapping.remove_dir(event.src_path)
         else:
-            self.storage_manager.remove_files(self.mapping.get_chunks(event.src_path))
+            self.storage_manager.remove_file_chunks(self.mapping.get_chunks(event.src_path))
             self.mapping.remove_file(event.src_path)
 
     @add_signals
@@ -84,5 +84,12 @@ class DemerioConductor(LoggingEventHandler, QObject):
             self.mapping.rename_file(event.src_path, event.dest_path)
 
     def reconstruct_dir(self, output_dir):
-        print "reconstruct dir"
+        for relative_file_path in self.mapping.get_all_relatives_file_name():
+            map_file = os.path.join(self.mapping.base_dir, relative_file_path)
+            file_to_create = os.path.join(output_dir, relative_file_path)
+            chunks = self.mapping.get_chunks(map_file)
+            chunks_download_path = [ os.path.join(output_dir, generate_random_string()) for chunk in chunks]
+            self.storage_manager.download_file_chunks(chunks, chunks_download_path)
+            self.fec.decode_path(file_to_create, chunks_download_path)
+
 
