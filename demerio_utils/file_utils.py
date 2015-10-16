@@ -100,6 +100,12 @@ def get_size(file_path):
         return 0
 
 
+def count_files_recursively_in_dir(folder):
+    total = 0
+    for root, dirs, files in os.walk(folder):
+        total += len(files)
+    return total
+
 
 def is_subdirectory(potential_subdirectory, expected_parent_directory):
 
