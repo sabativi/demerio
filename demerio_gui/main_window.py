@@ -29,12 +29,10 @@ class MainWindow(QDialog):
         super(MainWindow, self).__init__(parent)
         self.ui = uic.loadUi(ui_full_path('main_window.ui'), self)
         self.ui.label_version.setText("Demerio version %s" % (get_versions()['version'],))
-        self.ui.start_btn.setVisible(False)
         self.ui.progress_bar.setVisible(False)
         self.ui.tabWidget.setCurrentIndex(0)
         self.ui.launch_btn.clicked.connect(self.launch_daemon)
         self.ui.output_btn.clicked.connect(self.validate)
-        self.ui.start_btn.clicked.connect(self.reconstruct_data)
         self.tray = SystemTray(self)
         self.tray.show()
         self.create_tray_actions()
@@ -107,14 +105,10 @@ class MainWindow(QDialog):
     @pyqtSlot()
     def validate(self):
         self.dir_selected = QFileDialog.getExistingDirectory(self, "Select Directory")
-        self.ui.start_btn.setVisible(True)
         self.ui.progress_bar.setVisible(True)
-        self.ui.progress_bar.setMaximum(180)
+        self.ui.progress_bar.setMaximum(10)
         self.ui.progress_bar.setTextVisible(True)
         self.ui.start_label.setText("Your datas will be reconstructed in : %s directory" %(self.dir_selected,))
-
-    @pyqtSlot()
-    def reconstruct_data(self):
         self.event_handler.reconstruct_dir(self.dir_selected)
 
     @pyqtSlot()

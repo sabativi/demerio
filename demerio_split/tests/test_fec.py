@@ -39,7 +39,7 @@ class TestFileFec(object):
 
             output_path = os.path.join(tempdir, 'output-test')
 
-            file_fec.decode_path(output_path, chunks)
+            file_fec.decode_files(output_path, chunks)
 
             actual_output = open(output_path, "rb").read()
             assert actual_output == expected_output

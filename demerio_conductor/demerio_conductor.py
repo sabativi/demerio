@@ -45,8 +45,7 @@ class DemerioConductor(LoggingEventHandler, QObject):
             try:
                 parts = self.fec.encode_path_in_dir(event.src_path, temp_dir)
             except Exception, e:
-                print e
-                return
+                self.conductor_exception.emit(e)
             self.mapping.update_to_splitted_state(event.src_path, parts)
             self.mapping.update_to_sync_start_state(event.src_path)
             chunks_list = self.storage_manager.new_file(parts)

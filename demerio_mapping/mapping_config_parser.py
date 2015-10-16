@@ -125,6 +125,7 @@ class MappingConfigParser(Mapping):
     def _update_state(self, file_path, state):
         self.parser.remove_option(file_path, OPTION.state)
         self.parser.set(file_path, OPTION.state, state)
+        self._update()
 
     @convert_to_filename
     def remove_file(self, file_path):

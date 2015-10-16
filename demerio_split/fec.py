@@ -28,6 +28,10 @@ class FileFec(Striping):
         zfec.filefec.encode_to_files(input_file, fsize, output_dir, basename, self.k, self.m, suffix, True, True)
         return glob.glob(output_dir + '/*' + suffix)
 
-    def decode_path(self, output_path, chunks):
+    def decode_path(self, output_path, chunks_path):
+        chunks_file = [open(chunk_path) for chunk_path in chunks_path]
+        self.decode_files(output_path, chunks_file)
+
+    def decode_files(self, output_path, chunks_file):
         with open(output_path, 'w+b') as outf:
-            zfec.filefec.decode_from_files(outf, chunks)
+            zfec.filefec.decode_from_files(outf, chunks_file)
