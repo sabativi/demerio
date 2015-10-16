@@ -91,6 +91,10 @@ class Mapping():
     def has_file(self, file_path):
         pass
 
+    @abstractmethod
+    def get_all_relatives_file_name(self):
+        pass
+
 
 
 

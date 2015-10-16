@@ -189,7 +189,7 @@ class MappingConfigParser(Mapping):
 
     def get_number_of_files(self):
         """-1 is because of the config section"""
-        return len(self.parser.sections()) -1
+        return len(self.get_all_relatives_file_name())
 
     def get_files_in_dir(self, dir_name):
         return [file_path for file_path in self.parser.sections() if is_subdirectory(dirname(join(self._base_dir, file_path)), dir_name)]
@@ -205,3 +205,8 @@ class MappingConfigParser(Mapping):
     def _get_chunks(self, file_name):
         res = [item for item in self.parser.items(file_name) if not item[0] in (OPTION.needed, OPTION.splitted, OPTION.state)]
         return res
+
+    def get_all_relatives_file_name(self):
+        all_sections = self.parser.sections()
+        all_sections.remove(OPTION.config)
+        return all_sections

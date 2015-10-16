@@ -221,3 +221,18 @@ class MappingTest(unittest.TestCase):
 
         # Then
         self.assertEqual(self.mapping.get_state(file_path), STATE.detected)
+
+    def test_i_can_get_all_files(self):
+        # Given
+        number_of_files = random.randint(1, 100)
+        list_of_files = [self._add_random_file_with_random_numbers_to_map() for i in range(number_of_files)]
+
+        # When
+        actual_files = self.mapping.get_all_relatives_file_name()
+        actual_number_of_files = len(actual_files)
+        print actual_files
+
+        # Then
+        self.assertEqual(actual_number_of_files, number_of_files)
+        self.assertTrue(set(actual_files), list_of_files)
+
