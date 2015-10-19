@@ -22,7 +22,7 @@ class TestWatchDog(unittest.TestCase):
     def setUp(self):
         # Given
         self.observer = Observer()
-        self.event_handler = CountEventHandler()
+        self.event_handler = CountEventHandler(ignore_patterns=["*.DS_Store"])
         self.tempdir = os.path.realpath(tempfile.mkdtemp())
 
     def _start_observer(self):
@@ -43,6 +43,20 @@ class TestWatchDog(unittest.TestCase):
 
         # Then
         self.assertEqual(self.event_handler.get_number_of_events_received(), 0)
+
+    @attr(slow=True)
+    def test_on_created_with_ignore_pattern(self):
+        # Given
+        file_path = os.path.join(self.tempdir, ".DS_Store")
+
+        # When
+        self._start_observer()
+        create_new_file(file_path)
+        time.sleep(WAIT_TIME)
+
+        # Then
+        self.assertEqual(self.event_handler.get_number_of_events_received(), 1)
+        self.assertIsInstance(self.event_handler.get_event_at(0), DirModifiedEvent)
 
     @attr(slow=True)
     def test_i_can_detect_a_file_creation(self):
