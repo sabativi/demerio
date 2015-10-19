@@ -93,7 +93,7 @@ class MainWindow(QDialog):
         self.hide()
         self.ui.account_tab.setEnabled(True)
         number_of_storages = self.storage_manager.get_number_of_storages()
-        self.event_handler = DemerioConductor(Mapping(demerio_dir, config_file), FileFec(PARTS_NEEDED, number_of_storages), self.storage_manager)
+        self.event_handler = DemerioConductor(Mapping(demerio_dir, config_file), FileFec(PARTS_NEEDED, number_of_storages), self.storage_manager, ignore_patterns = IGNORE_PATTERNS)
         self.event_handler.conductor_exception.connect(self.tray.conductor_problem)
         self.event_handler.event_started.connect(self.tray.event_started)
         self.event_handler.event_finished.connect(self.tray.event_finished)

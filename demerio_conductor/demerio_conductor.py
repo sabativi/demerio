@@ -1,8 +1,8 @@
-from watchdog.events import LoggingEventHandler
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from demerio_utils.log import *
 from demerio_utils.file_utils import *
+from demerio_daemon.handler import MatchingHandler
 
 def add_signals(func):
     """
@@ -20,7 +20,7 @@ def add_signals(func):
             self.event_finished.emit()
     return wrapper
 
-class DemerioConductor(LoggingEventHandler, QObject):
+class DemerioConductor(MatchingHandler, QObject):
     """
     Handler to operate all operations
     """
@@ -29,11 +29,11 @@ class DemerioConductor(LoggingEventHandler, QObject):
     event_finished = pyqtSignal()
     conductor_exception = pyqtSignal(Exception)
 
-    def __init__(self, mapping, fec, storage_manager):
+    def __init__(self, mapping, fec, storage_manager, ignore_patterns):
         self.mapping = mapping
         self.fec = fec
         self.storage_manager = storage_manager
-        LoggingEventHandler.__init__(self)
+        MatchingHandler.__init__(self, ignore_patterns=ignore_patterns)
         QObject.__init__(self)
 
     @add_signals
