@@ -33,7 +33,7 @@ class DemerioConductor(MatchingHandler, QObject):
     reconstruct_update = pyqtSignal(int)
     conductor_exception = pyqtSignal(Exception)
 
-    def __init__(self, mapping, fec, storage_manager, ignore_patterns):
+    def __init__(self, mapping, fec, storage_manager, ignore_patterns = None):
         self.mapping = mapping
         self.fec = fec
         self.storage_manager = storage_manager
