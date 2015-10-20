@@ -26,6 +26,11 @@ class BoxAPI(StorageAPI):
         super(BoxAPI, self).__init__(credential_dir)
         self.auth_file = join(credential_dir, credential_filename)
         self.oauth = OAuth2(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, store_tokens=self.write_access_token)
+        try:
+            self.get_tokens_from_file()
+            self.authorize()
+        except IOError:
+            pass
 
     def get_auth_url(self):
         auth_url, csrf_token = self.oauth.get_authorization_url(REDIRECT_URI)

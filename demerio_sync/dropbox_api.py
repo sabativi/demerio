@@ -29,6 +29,11 @@ class DropboxAPI(StorageAPI):
         super(DropboxAPI, self).__init__(credential_dir)
         self.auth_file = join(credential_dir, credential_filename)
         self.flow = client.DropboxOAuth2Flow(APP_KEY, APP_SECRET, REDIRECT_URI, {}, "dropbox-auth-csrf-token")
+        try:
+            access_token = self.get_access_token_from_file()
+            self.build(access_token)
+        except IOError:
+            pass
 
     def get_auth_url(self):
         return self.flow.start()

@@ -89,12 +89,8 @@ class TestDropboxApi(unittest.TestCase):
 
     @attr(slow=True)
     def test_i_do_not_need_to_go_through_oauth_if_file_exists(self):
-        # Given
-        dropbox_new = DropboxAPI(self.tempdir)
-
         # When
-        access_token = dropbox_new.get_access_token_from_file()
-        dropbox_new.build(access_token)
+        dropbox_new = DropboxAPI(self.tempdir)
 
         # Then
         self.assertTrue(dropbox_new.is_connected())

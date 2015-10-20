@@ -92,11 +92,8 @@ class TestBoxApi(unittest.TestCase):
 
     @attr(slow=True)
     def test_i_do_not_need_to_go_through_oauth_if_file_exists(self):
-        # Given
-        box_new = BoxAPI(self.tempdir)
-
         # When
-        box_new.authorize()
+        box_new = BoxAPI(self.tempdir)
 
         # Then
         self.assertTrue(box_new.is_connected())
