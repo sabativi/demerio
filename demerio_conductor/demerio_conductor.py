@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QApplication
 from demerio_utils.log import *
 from demerio_utils.file_utils import *
 from demerio_daemon.handler import MatchingHandler
@@ -27,6 +28,9 @@ class DemerioConductor(MatchingHandler, QObject):
 
     event_started = pyqtSignal()
     event_finished = pyqtSignal()
+    reconstruct_started = pyqtSignal(int)
+    reconstruct_finished = pyqtSignal()
+    reconstruct_update = pyqtSignal(int)
     conductor_exception = pyqtSignal(Exception)
 
     def __init__(self, mapping, fec, storage_manager, ignore_patterns):
@@ -83,7 +87,9 @@ class DemerioConductor(MatchingHandler, QObject):
             self.mapping.rename_file(event.src_path, event.dest_path)
 
     def reconstruct_dir(self, output_dir):
-        for relative_file_path in self.mapping.get_all_relatives_file_name():
+        self.reconstruct_started.emit(self.mapping.get_number_of_files())
+        QApplication.processEvents()
+        for i, relative_file_path in enumerate(self.mapping.get_all_relatives_file_name()):
             map_file = os.path.join(self.mapping.base_dir, relative_file_path)
             file_to_create = os.path.join(output_dir, relative_file_path)
             chunks = self.mapping.get_chunks(map_file)
@@ -92,5 +98,8 @@ class DemerioConductor(MatchingHandler, QObject):
             self.storage_manager.download_file_chunks(chunks, chunks_download_path)
             create_dir_if_not_exist(file_to_create)
             self.fec.decode_path(file_to_create, chunks_download_path)
+            self.reconstruct_update.emit(i)
+            QApplication.processEvents()
+        self.reconstruct_finished.emit()
 
 

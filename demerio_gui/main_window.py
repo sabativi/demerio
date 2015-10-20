@@ -97,17 +97,32 @@ class MainWindow(QDialog):
         self.event_handler.conductor_exception.connect(self.tray.conductor_problem)
         self.event_handler.event_started.connect(self.tray.event_started)
         self.event_handler.event_finished.connect(self.tray.event_finished)
+        self.event_handler.reconstruct_started.connect(self.init_progress_bar)
+        self.event_handler.reconstruct_finished.connect(self.end_progress_bar)
+        self.event_handler.reconstruct_update.connect(self.update_progress_bar)
         observer = Observer()
         self.daemon = DemerioDaemon(self.event_handler, observer, demerio_dir, should_exit=False)
         self.daemon.start()
         self.open_demerio_folder()
 
+    @pyqtSlot(int)
+    def init_progress_bar(self, number_of_files):
+        self.ui.progress_bar.setVisible(True)
+        self.ui.progress_bar.setMaximum(number_of_files)
+        self.ui.progress_bar.setTextVisible(True)
+
+    @pyqtSlot(int)
+    def update_progress_bar(self, value):
+        self.ui.progress_bar.setValue(value)
+
+    @pyqtSlot()
+    def end_progress_bar(self):
+        self.ui.progress_bar.setVisible(False)
+        self.ui.start_label.setText("")
+
     @pyqtSlot()
     def validate(self):
         self.dir_selected = QFileDialog.getExistingDirectory(self, "Select Directory")
-        self.ui.progress_bar.setVisible(True)
-        self.ui.progress_bar.setMaximum(10)
-        self.ui.progress_bar.setTextVisible(True)
         self.ui.start_label.setText("Your datas will be reconstructed in : %s directory" %(self.dir_selected,))
         self.event_handler.reconstruct_dir(self.dir_selected)
 
