@@ -18,7 +18,6 @@ if __name__ == "__main__":
     app.setWindowIcon(QIcon(":/images/demerio.png"))
     app.setApplicationVersion(get_versions()["version"])
     main_window = MainWindow()
-    main_window.show()
     main_window.setWindowTitle("Demerio")
     sys.exit(app.exec_())
 

@@ -145,5 +145,7 @@ class MainWindow(QDialog):
                 self.update_launch_btn_state()
         if self.ui.launch_btn.isEnabled():
             self.launch_daemon()
+        else:
+            self.show()
 
 
