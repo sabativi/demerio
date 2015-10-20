@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QListView
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QCoreApplication
 from resources.demerio_qrc import *
@@ -39,6 +40,7 @@ class MainWindow(QDialog):
         self.init_storage_manager()
         self.add_clouds_to_view()
         self.daemon = None
+        self.check_if_already_connected()
 
     def create_tray_actions(self):
         self.tray.add_action("Open Demerio Folder", self.open_demerio_folder)
@@ -132,4 +134,16 @@ class MainWindow(QDialog):
             self.daemon.should_exit = True
             self.daemon.join()
         QCoreApplication.instance().quit()
+
+    def check_if_already_connected(self):
+        QApplication.processEvents()
+        for index in range(self.ui.listWidget.count()):
+            QApplication.processEvents()
+            cloud_widget = self.ui.listWidget.itemWidget(self.ui.listWidget.item(index))
+            if self.storage_manager.map_of_storage[cloud_widget.name].is_connected():
+                cloud_widget.ui.cloudAction.setEnabled(False)
+                self.update_launch_btn_state()
+        if self.ui.launch_btn.isEnabled():
+            self.launch_daemon()
+
 
