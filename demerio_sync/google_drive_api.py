@@ -39,6 +39,12 @@ class GoogleDriveAPI(StorageAPI):
         self._writeYamlConfigFile(credential_dir, credential_filename, config_filename)
         self.gauth = GoogleAuth(self.yaml_config_file)
         self.gauth.LoadCredentialsFile(self.credential_path)
+        try:
+            self.gauth.Authorize()
+            self.build()
+        except Exception, e:
+            pass
+
 
     def is_connected(self):
         return not self.gauth.access_token_expired
