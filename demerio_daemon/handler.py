@@ -1,13 +1,36 @@
 from watchdog.events import LoggingEventHandler
 from watchdog.events import PatternMatchingEventHandler
-
-import logging
-logging.basicConfig(level=logging.DEBUG)
+from demerio_utils.log import*
 
 class MatchingHandler(PatternMatchingEventHandler):
 
     def __init__(self, ignore_patterns):
         PatternMatchingEventHandler.__init__(self, ignore_patterns=ignore_patterns)
+
+    def on_moved(self, event):
+        super(MatchingHandler, self).on_moved(event)
+
+        what = 'directory' if event.is_directory else 'file'
+        logger.info("Moved %s: from %s to %s", what, event.src_path,
+                     event.dest_path)
+
+    def on_created(self, event):
+        super(MatchingHandler, self).on_created(event)
+
+        what = 'directory' if event.is_directory else 'file'
+        logger.info("Created %s: %s", what, event.src_path)
+
+    def on_deleted(self, event):
+        super(MatchingHandler, self).on_deleted(event)
+
+        what = 'directory' if event.is_directory else 'file'
+        logger.info("Deleted %s: %s", what, event.src_path)
+
+    def on_modified(self, event):
+        super(MatchingHandler, self).on_modified(event)
+
+        what = 'directory' if event.is_directory else 'file'
+        logger.info("Modified %s: %s", what, event.src_path)
 
 
 class CountEventHandler(MatchingHandler):
@@ -19,7 +42,7 @@ class CountEventHandler(MatchingHandler):
 
     def on_any_event(self, event):
         super(CountEventHandler, self).on_any_event(event)
-        logging.debug(event)
+        logger.debug(event)
         self.list_of_events_received.append(event)
 
     def get_number_of_events_received(self):
