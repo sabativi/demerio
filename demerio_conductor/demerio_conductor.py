@@ -48,13 +48,14 @@ class DemerioConductor(MatchingHandler, QObject):
             self.mapping.add_file(event.src_path, self.fec.k, self.fec.m)
             try:
                 parts = self.fec.encode_path_in_dir(event.src_path, temp_dir)
+                self.mapping.update_to_splitted_state(event.src_path, parts)
+                self.mapping.update_to_sync_start_state(event.src_path)
+                chunks_list = self.storage_manager.new_file(parts)
+                self.mapping.update_to_ok_state(event.src_path, chunks_list)
+                delete_dir(temp_dir)
             except Exception, e:
+                logger.error("There is an error on_created event %s ", (e,))
                 self.conductor_exception.emit(e)
-            self.mapping.update_to_splitted_state(event.src_path, parts)
-            self.mapping.update_to_sync_start_state(event.src_path)
-            chunks_list = self.storage_manager.new_file(parts)
-            self.mapping.update_to_ok_state(event.src_path, chunks_list)
-            delete_dir(temp_dir)
 
     @add_signals
     def on_deleted(self, event):
