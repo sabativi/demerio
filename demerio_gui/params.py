@@ -7,6 +7,7 @@ demerio_dir = os.path.join(os.path.expanduser("~"), "demerio")
 if not os.path.exists(demerio_dir):
     create_new_dir(demerio_dir)
 config_file = os.path.join(demerio_config_dir, "map.demerio")
+log_file = os.path.join(demerio_config_dir, "log.demerio")
 
 PARTS_NEEDED = 2 ## any 2 of pars can reconstruct
 

@@ -2,7 +2,6 @@ import os
 import uuid
 import shutil
 import tempfile
-from log import *
 
 
 def generate_random_file_path():
@@ -63,7 +62,7 @@ def copy_dir(src, dest):
 
 def read_file(file_path):
     with open(file_path, 'r') as f:
-        logger.debug("file content : %s", f.read())
+        print "file content : %s", f.read()
 
 
 def delete_file(file_path):
